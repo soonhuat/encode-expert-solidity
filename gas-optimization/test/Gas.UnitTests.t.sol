@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0; 
 
-import "forge-std/Test.sol";
-import "../../src/Gas.sol";
+import "gas-optimization/forge-std/Test.sol";
+import "../src/Gas.sol";
 
 contract GasTest is Test {
     GasContract public gas;
@@ -82,10 +82,13 @@ contract GasTest is Test {
         gas.addToWhitelist(_sender, _tier);
         vm.stopPrank();
         vm.prank(_sender);
+        console.log(_amount);
         gas.whiteTransfer(_recipient, _amount);
         (bool a, uint256 b) = gas.getPaymentStatus(address(_sender));
         console.log(a);
         assertEq(a, true);
+        console.log(b);
+        console.log(_amount);
         assertEq(b, _amount);
     }
 
@@ -152,6 +155,14 @@ contract GasTest is Test {
         vm.stopPrank();
         vm.prank(_sender);
         gas.whiteTransfer(_recipient, _amount);
+        console.log('gas.balances(_sender)');
+        console.log(gas.balances(_sender));
+        console.log('_preSenderAmount');
+        console.log(_preSenderAmount);
+        console.log('_amount');
+        console.log( _amount);
+        console.log('gas.whitelist(_sender)');
+        console.log(gas.whitelist(_sender));
         assertEq(gas.balances(_sender), (_preSenderAmount - _amount) + gas.whitelist(_sender));
         assertEq(gas.balances(_recipient),(_preRecipientAmount + _amount) - gas.whitelist(_sender));
     }
